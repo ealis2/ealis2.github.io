@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ theme }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My App - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    boxShadow: {
+                        '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
+                    },
+                    perspective: {
+                        '1000': '1000px',
+                    },
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="drawer lg:drawer-open">
+        <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+        <div class="drawer-content p-8 bg-base-100 min-h-screen flex justify-center items-center">
+            <div class="container mx-auto px-4 w-full max-w-4xl">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold mb-2">Your Balance</h2>
+                    <p class="text-3xl font-bold text-primary">${{ "%.2f"|format(current_user.balance) }}</p>
+                </div>
+                
+                <div class="flex justify-center items-center mb-8 space-x-4">
+                    <div id="black-token" class="token w-32 h-32 rounded-full bg-black flex items-center justify-center cursor-pointer hover:scale-110 transition-transform" onclick="selectChoice('black')">
+                        <span class="material-icons text-4xl text-white">face</span>
+                    </div>
+                    <div id="white-token" class="token w-32 h-32 rounded-full bg-white flex items-center justify-center cursor-pointer hover:scale-110 transition-transform" onclick="selectChoice('white')">
+                        <span class="material-icons text-4xl text-black">change_history</span>
+                    </div>
+                </div>
+                
+                <div id="coin-container" class="hidden flex justify-center items-center mb-8">
+                    <div id="coin" class="coin-flip-container w-64 h-64 relative transition-transform duration-500 transform-style-3d">
+                        <div class="coin-side coin-front absolute w-full h-full rounded-full bg-black flex items-center justify-center" style="transform: rotateY(0deg) translateZ(32px);">
+                            <span class="material-icons text-6xl text-white">face</span>
+                        </div>
+                        <div class="coin-side coin-back absolute w-full h-full rounded-full bg-white flex items-center justify-center" style="transform: rotateY(180deg) translateZ(32px);">
+                            <span class="material-icons text-6xl text-black">change_history</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <input type="hidden" id="selected-side" name="selected-side">
+                <div class="text-center mb-4">
+                    <p id="coin-selection-text" class="text-xl font-bold">Select a token to bet</p>
+                </div>
+                
+                <div class="form-control w-full max-w-md mx-auto">
+                    <label class="label">
+                        <span class="label-text">Bet Amount</span>
+                    </label>
+                    <div class="join w-full">
+                        <input type="number" id="bet-amount" placeholder="Enter amount" class="input input-bordered join-item w-full" min="1" step="0.01" />
+                        <button class="btn btn-primary join-item" onclick="placeBet()" id="place-bet-btn" disabled>Place Bet</button>
+                    </div>
+                </div>
+                
+                <!-- Result Modal -->
+                <dialog id="result-modal" class="modal">
+                    <div class="modal-box">
+                        <h3 class="font-bold text-lg" id="result-title">Result</h3>
+                        <p class="py-4" id="result-message"></p>
+                        <div class="modal-action">
+                            <form method="dialog">
+                                <button class="btn">Close</button>
+                            </form>
+                        </div>
+                    </div>
+                </dialog>
+            </div>
+        </div>
+        {% include 'components/_sidebar.html' %}
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

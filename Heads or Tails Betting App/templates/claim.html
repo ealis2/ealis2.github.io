@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ theme }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My App - Claim Rewards</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="drawer lg:drawer-open">
+        <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+        <div class="drawer-content p-8 bg-base-100 min-h-screen">
+            <div class="container mx-auto px-4 max-w-4xl">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold mb-2">Your Balance</h2>
+                    <p class="text-3xl font-bold text-primary">${{ "%.2f"|format(current_user.balance) }}</p>
+                </div>
+                
+                <div class="card bg-base-200 shadow-xl p-6 mb-8">
+                    <h3 class="text-xl font-bold mb-4">Time Reward</h3>
+                    <p class="mb-4">Claim €0.05 every 10 minutes!</p>
+                    <button id="claimBtn" 
+                            onclick="claimTimeReward()" 
+                            class="btn btn-primary"
+                            {% if not can_claim %}disabled{% endif %}>
+                        Claim Reward
+                    </button>
+                    <p id="timeLeft" class="mt-4">
+                        {% if not can_claim %}
+                            Next claim available in: <span id="countdown">{{ time_left }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+                
+                <div class="card bg-base-200 shadow-xl p-6">
+                    <h3 class="text-xl font-bold mb-4">Case Opening</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                        <div class="card bg-base-100 shadow-md">
+                            <div class="card-body">
+                                <h4 class="card-title">Common Case</h4>
+                                <p>€0.05 (99%)</p>
+                            </div>
+                        </div>
+                        <div class="card bg-base-100 shadow-md">
+                            <div class="card-body">
+                                <h4 class="card-title">Uncommon Case</h4>
+                                <p>€0.15 (0.20%)</p>
+                            </div>
+                        </div>
+                        <div class="card bg-base-100 shadow-md">
+                            <div class="card-body">
+                                <h4 class="card-title">Rare Case</h4>
+                                <p>€0.30 (0.20%)</p>
+                            </div>
+                        </div>
+                        <div class="card bg-base-100 shadow-md">
+                            <div class="card-body">
+                                <h4 class="card-title">Epic Case</h4>
+                                <p>€0.10 (0.55%)</p>
+                            </div>
+                        </div>
+                        <div class="card bg-base-100 shadow-md">
+                            <div class="card-body">
+                                <h4 class="card-title">Legendary Case</h4>
+                                <p>€1.00 (0.05%)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="claimCase()" class="btn btn-primary">Open Case</button>
+                </div>
+            </div>
+        </div>
+        {% include 'components/_sidebar.html' %}
+    </div>
+    
+    <dialog id="result-modal" class="modal">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg" id="result-title">Result</h3>
+            <p class="py-4" id="result-message"></p>
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn">Close</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
+    
+    <script src="{{ url_for('static', filename='js/claim.js') }}"></script>
+</body>
+</html>
